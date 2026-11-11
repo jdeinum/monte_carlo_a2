@@ -4,7 +4,8 @@
 //! In designing this, I had two primary directions to go:
 //! 1. Generate the events before the simulation starts, then move directly to the tick they happen
 //!    in. This doesn't feel correct, for some reason, so I didn't do it this way.
-//! 2. Skip to the next event,
+//! 2. Skip to the next event, generate any new events needed, and continue stepping through. This
+//!    feels closer to what I expect a simulation like this should be, so I opted for this method.
 
 use clap::Parser;
 use rand::{SeedableRng, random, rngs::SmallRng};

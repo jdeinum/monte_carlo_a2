@@ -335,7 +335,7 @@ fn main() {
     println!();
     println!("{:<20}{:>16}{:>16}", "", "formula", "measured");
     println!(
-        "{:<20}{:>16.6}{:>16.6}",
+        "{:<20}{:>16.10}{:>16.10}",
         "X (repairs/min)", throughput, measured_throughput
     );
     println!(

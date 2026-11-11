@@ -10,7 +10,11 @@
 use clap::Parser;
 use rand::{SeedableRng, random, rngs::SmallRng};
 use rand_distr::{Distribution, Geometric};
-use std::{cmp::Reverse, collections::BinaryHeap, ops::Deref};
+use std::{
+    cmp::Reverse,
+    collections::{BinaryHeap, VecDeque},
+    ops::Deref,
+};
 
 /// Monte Carlo simulation of a machine shop with N machines and a 2-person repair center.
 /// All times are in minutes (one tick = one minute).
@@ -170,7 +174,7 @@ impl Server {
 struct Simulation {
     servers: [Server; 2],
     computers: Vec<Option<Computer>>,
-    fix_queue: Vec<Computer>,
+    fix_queue: VecDeque<Computer>,
     duration: u64,
 
     /// The ticks our events happen at, so we can skip straight to them
@@ -218,7 +222,7 @@ impl Simulation {
 
         Self {
             servers: Default::default(),
-            fix_queue: Vec::new(),
+            fix_queue: VecDeque::new(),
             computers,
             duration: args.duration,
             events,
@@ -244,7 +248,7 @@ impl Simulation {
             if !server.is_idle() {
                 continue;
             }
-            let Some(mut computer) = self.fix_queue.pop() else {
+            let Some(mut computer) = self.fix_queue.pop_front() else {
                 break;
             };
 
@@ -270,7 +274,7 @@ impl Simulation {
                 let computer = self.computers[id as usize]
                     .take()
                     .expect("a broken computer must be in the computers list");
-                self.fix_queue.push(computer);
+                self.fix_queue.push_back(computer);
             }
 
             // a repair finishes: schedule the computer's next break and return it to the list
